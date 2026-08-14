@@ -20,32 +20,40 @@ body {
 header {
     background: #111827;
     color: white;
-    padding: 22px;
+    padding: 20px;
     text-align: center;
 }
 
 header h1 {
     margin: 0;
-    font-size: 30px;
+    font-size: 28px;
 }
 
 header p {
     margin: 6px 0 0;
-    opacity: .8;
+    opacity: .85;
 }
 
 .container {
     max-width: 900px;
     margin: auto;
-    padding: 20px;
+    padding: 18px;
 }
 
-.meta {
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.card {
     background: white;
     border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.08);
-    margin-bottom: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.07);
 }
 
 .meta h2 {
@@ -68,21 +76,20 @@ header p {
 .meta-info {
     display: flex;
     justify-content: space-between;
-    margin-top: 12px;
-    font-size: 15px;
+    margin-top: 10px;
 }
 
 .falta {
-    font-size: 24px;
+    font-size: 23px;
     font-weight: bold;
-    margin-top: 18px;
+    margin-top: 15px;
 }
 
 .mensaje {
     background: #fff7ed;
     border-left: 5px solid #f97316;
-    padding: 15px;
-    margin-top: 15px;
+    padding: 14px;
+    margin-top: 14px;
     border-radius: 10px;
 }
 
@@ -92,31 +99,153 @@ header p {
     gap: 15px;
 }
 
-.card {
+.menu-card {
     background: white;
     border-radius: 16px;
-    padding: 22px;
+    padding: 22px 12px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,.06);
     cursor: pointer;
-    transition: .2s;
 }
 
-.card:hover {
-    transform: translateY(-3px);
+.menu-card:hover {
+    transform: translateY(-2px);
 }
 
-.card .icon {
+.icon {
     font-size: 32px;
 }
 
-.card h3 {
-    margin-bottom: 5px;
+.menu-card h3 {
+    margin: 8px 0 4px;
 }
 
-.card p {
+.menu-card p {
     color: #666;
-    margin-top: 5px;
+    margin: 0;
+}
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-primary {
+    background: #111827;
+    color: white;
+}
+
+.btn-success {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #222;
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.top-buttons h2 {
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.preview {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: none;
+    margin-top: 10px;
+}
+
+.calculo {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+.calculo strong {
+    font-size: 20px;
+}
+
+.producto {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.producto img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #eee;
+}
+
+.producto-info {
+    flex: 1;
+}
+
+.producto-info h3 {
+    margin: 0 0 5px;
+}
+
+.producto-info p {
+    margin: 3px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.utilidad {
+    color: #15803d;
+    font-weight: bold;
+}
+
+.vacio {
+    text-align: center;
+    color: #777;
+    padding: 30px 10px;
 }
 
 footer {
@@ -127,16 +256,20 @@ footer {
 }
 
 @media (max-width: 600px) {
-    .grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
     .container {
-        padding: 14px;
+        padding: 12px;
     }
 
-    header h1 {
-        font-size: 26px;
+    .grid {
+        gap: 12px;
+    }
+
+    .menu-card {
+        padding: 20px 8px;
+    }
+
+    .producto {
+        align-items: flex-start;
     }
 }
 </style>
@@ -151,7 +284,10 @@ footer {
 
 <div class="container">
 
-    <div class="meta">
+<section id="inicio" class="screen active">
+
+    <div class="card meta">
+
         <h2>🎯 Meta de hoy</h2>
 
         <div class="progress">
@@ -172,41 +308,42 @@ footer {
             <strong>2 ventas de L.225</strong>
             para alcanzar tu meta de hoy.
         </div>
+
     </div>
 
     <div class="grid">
 
-        <div class="card">
+        <div class="menu-card" onclick="mostrarProductos()">
             <div class="icon">📦</div>
             <h3>Productos</h3>
             <p>Catálogo e inventario</p>
         </div>
 
-        <div class="card">
+        <div class="menu-card">
             <div class="icon">💰</div>
             <h3>Ventas</h3>
             <p>Registrar ventas</p>
         </div>
 
-        <div class="card">
+        <div class="menu-card">
             <div class="icon">👥</div>
             <h3>Clientes</h3>
             <p>Cotizaciones y compras</p>
         </div>
 
-        <div class="card">
+        <div class="menu-card">
             <div class="icon">🎯</div>
             <h3>Metas</h3>
             <p>Objetivos del negocio</p>
         </div>
 
-        <div class="card">
+        <div class="menu-card">
             <div class="icon">📊</div>
             <h3>Resultados</h3>
             <p>Indicadores de ventas</p>
         </div>
 
-        <div class="card">
+        <div class="menu-card">
             <div class="icon">📲</div>
             <h3>WhatsApp</h3>
             <p>Compartir catálogo</p>
@@ -214,11 +351,589 @@ footer {
 
     </div>
 
+</section>
+
+
+<section id="productos" class="screen">
+
+    <div class="top-buttons">
+
+        <h2>📦 Productos</h2>
+
+        <button class="btn btn-secondary" onclick="mostrarInicio()">
+            ← Inicio
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>➕ Agregar producto</h3>
+
+        <div class="form-group">
+
+            <label>Fotografía</label>
+
+            <input
+                type="file"
+                id="imagen"
+                accept="image/*">
+
+            <img
+                id="preview"
+                class="preview">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Nombre del producto</label>
+
+            <input
+                type="text"
+                id="nombre"
+                placeholder="Ej. Cartera negra">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Categoría</label>
+
+            <select id="categoria">
+
+                <option value="">
+                    Seleccione una categoría
+                </option>
+
+                <option>Mujer</option>
+                <option>Hombre</option>
+                <option>Hogar</option>
+                <option>Ropa</option>
+                <option>Zapatos</option>
+                <option>Carteras</option>
+                <option>Cosméticos</option>
+                <option>Accesorios</option>
+                <option>Otros</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Costo del producto (L.)</label>
+
+            <input
+                type="number"
+                id="costo"
+                placeholder="0.00"
+                step="0.01"
+                oninput="calcularUtilidad()">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Precio de venta (L.)</label>
+
+            <input
+                type="number"
+                id="precio"
+                placeholder="0.00"
+                step="0.01"
+                oninput="calcularUtilidad()">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Existencia</label>
+
+            <input
+                type="number"
+                id="existencia"
+                placeholder="0"
+                min="0">
+
+        </div>
+
+
+        <div class="calculo">
+
+            <div>
+                Utilidad por unidad:
+                <strong id="utilidad">L.0.00</strong>
+            </div>
+
+            <br>
+
+            <div>
+                Margen:
+                <strong id="margen">0.00%</strong>
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn btn-success"
+            onclick="guardarProducto()">
+
+            💾 Guardar producto
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h3>📋 Mis productos</h3>
+
+        <div id="listaProductos"></div>
+
+    </div>
+
+</section>
+
 </div>
+
 
 <footer>
     KAMAPIRO · Sistema de ventas
 </footer>
+
+
+<script>
+
+let productos =
+    JSON.parse(
+        localStorage.getItem("kamapiro_productos")
+    ) || [];
+
+
+function mostrarProductos() {
+
+    document
+        .getElementById("inicio")
+        .classList
+        .remove("active");
+
+    document
+        .getElementById("productos")
+        .classList
+        .add("active");
+
+    mostrarLista();
+
+}
+
+
+function mostrarInicio() {
+
+    document
+        .getElementById("productos")
+        .classList
+        .remove("active");
+
+    document
+        .getElementById("inicio")
+        .classList
+        .add("active");
+
+}
+
+
+function calcularUtilidad() {
+
+    const costo =
+        parseFloat(
+            document.getElementById("costo").value
+        ) || 0;
+
+    const precio =
+        parseFloat(
+            document.getElementById("precio").value
+        ) || 0;
+
+    const utilidad = precio - costo;
+
+    let margen = 0;
+
+    if (precio > 0) {
+
+        margen =
+            (utilidad / precio) * 100;
+
+    }
+
+    document
+        .getElementById("utilidad")
+        .textContent =
+        "L." + utilidad.toFixed(2);
+
+    document
+        .getElementById("margen")
+        .textContent =
+        margen.toFixed(2) + "%";
+
+}
+
+
+document
+    .getElementById("imagen")
+    .addEventListener(
+        "change",
+        function(event) {
+
+            const archivo =
+                event.target.files[0];
+
+            if (!archivo) return;
+
+            const lector =
+                new FileReader();
+
+            lector.onload =
+                function(e) {
+
+                    const preview =
+                        document.getElementById(
+                            "preview"
+                        );
+
+                    preview.src =
+                        e.target.result;
+
+                    preview.style.display =
+                        "block";
+
+                };
+
+            lector.readAsDataURL(archivo);
+
+        }
+    );
+
+
+function guardarProducto() {
+
+    const nombre =
+        document
+        .getElementById("nombre")
+        .value
+        .trim();
+
+    const categoria =
+        document
+        .getElementById("categoria")
+        .value;
+
+    const costo =
+        parseFloat(
+            document
+            .getElementById("costo")
+            .value
+        ) || 0;
+
+    const precio =
+        parseFloat(
+            document
+            .getElementById("precio")
+            .value
+        ) || 0;
+
+    const existencia =
+        parseInt(
+            document
+            .getElementById("existencia")
+            .value
+        ) || 0;
+
+    const imagen =
+        document
+        .getElementById("preview")
+        .src || "";
+
+
+    if (!nombre) {
+
+        alert(
+            "Por favor escribí el nombre del producto."
+        );
+
+        return;
+
+    }
+
+
+    if (!categoria) {
+
+        alert(
+            "Seleccioná una categoría."
+        );
+
+        return;
+
+    }
+
+
+    if (costo <= 0 || precio <= 0) {
+
+        alert(
+            "Ingresá correctamente el costo y el precio."
+        );
+
+        return;
+
+    }
+
+
+    const utilidad =
+        precio - costo;
+
+    const margen =
+        (utilidad / precio) * 100;
+
+
+    const producto = {
+
+        id: Date.now(),
+
+        nombre: nombre,
+
+        categoria: categoria,
+
+        costo: costo,
+
+        precio: precio,
+
+        existencia: existencia,
+
+        utilidad: utilidad,
+
+        margen: margen,
+
+        imagen: imagen
+
+    };
+
+
+    productos.push(producto);
+
+
+    localStorage.setItem(
+        "kamapiro_productos",
+        JSON.stringify(productos)
+    );
+
+
+    alert(
+        "✅ Producto guardado correctamente."
+    );
+
+
+    limpiarFormulario();
+
+    mostrarLista();
+
+}
+
+
+function mostrarLista() {
+
+    const lista =
+        document.getElementById(
+            "listaProductos"
+        );
+
+
+    if (productos.length === 0) {
+
+        lista.innerHTML =
+            '<div class="vacio">' +
+            'Todavía no hay productos registrados.' +
+            '</div>';
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    productos.forEach(
+        function(producto) {
+
+            const elemento =
+                document.createElement(
+                    "div"
+                );
+
+            elemento.className =
+                "producto";
+
+
+            const imagen =
+                producto.imagen ||
+                "https://via.placeholder.com/75?text=Producto";
+
+
+            elemento.innerHTML = `
+
+                <img src="${imagen}">
+
+                <div class="producto-info">
+
+                    <h3>
+                        ${producto.nombre}
+                    </h3>
+
+                    <p>
+                        🗂️ ${producto.categoria}
+                    </p>
+
+                    <p>
+                        Costo:
+                        L.${producto.costo.toFixed(2)}
+                        |
+                        Venta:
+                        L.${producto.precio.toFixed(2)}
+                    </p>
+
+                    <p>
+                        Existencia:
+                        ${producto.existencia}
+                    </p>
+
+                    <p class="utilidad">
+
+                        Utilidad:
+                        L.${producto.utilidad.toFixed(2)}
+
+                        |
+
+                        Margen:
+                        ${producto.margen.toFixed(2)}%
+
+                    </p>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="eliminarProducto(${producto.id})">
+
+                        🗑️ Eliminar
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+            lista.appendChild(elemento);
+
+        }
+    );
+
+}
+
+
+function eliminarProducto(id) {
+
+    if (
+        !confirm(
+            "¿Querés eliminar este producto?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    productos =
+        productos.filter(
+            function(producto) {
+
+                return producto.id !== id;
+
+            }
+        );
+
+
+    localStorage.setItem(
+        "kamapiro_productos",
+        JSON.stringify(productos)
+    );
+
+
+    mostrarLista();
+
+}
+
+
+function limpiarFormulario() {
+
+    document
+        .getElementById("nombre")
+        .value = "";
+
+    document
+        .getElementById("categoria")
+        .value = "";
+
+    document
+        .getElementById("costo")
+        .value = "";
+
+    document
+        .getElementById("precio")
+        .value = "";
+
+    document
+        .getElementById("existencia")
+        .value = "";
+
+
+    document
+        .getElementById("utilidad")
+        .textContent =
+        "L.0.00";
+
+
+    document
+        .getElementById("margen")
+        .textContent =
+        "0.00%";
+
+
+    document
+        .getElementById("imagen")
+        .value = "";
+
+
+    document
+        .getElementById("preview")
+        .style
+        .display = "none";
+
+
+    document
+        .getElementById("preview")
+        .src = "";
+
+}
+
+</script>
 
 </body>
 </html>
