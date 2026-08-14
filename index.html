@@ -36,6 +36,8 @@
 <script>
 let productos=JSON.parse(localStorage.getItem('kamapiro_productos')||'[]');let ventas=JSON.parse(localStorage.getItem('kamapiro_ventas')||'[]');let editandoId=null;const META=1200;
 productos=productos.map(p=>({...p,codigo:p.codigo||'',descripcion:p.descripcion||''}));
+function migrarVentasHistoricas(){let cambio=false;ventas=ventas.map(v=>{const cantidad=Number(v.cantidad||0);const total=Number(v.total||0);let p=null;if(v.codigo)p=productos.find(x=>String(x.codigo||'').toLowerCase()===String(v.codigo).toLowerCase());if(!p&&v.producto)p=productos.find(x=>String(x.nombre||'').toLowerCase()===String(v.producto).toLowerCase());if(p&&cantidad>0&&(!Number.isFinite(Number(v.costo))||Number(v.costo)<=0)){v.costo=Number(p.costo||0);v.utilidad=(Number(p.precio||v.precio||0)-Number(p.costo||0))*cantidad;cambio=true;}else if(p&&cantidad>0&&Number(v.utilidad||0)===total&&Number(p.costo||0)>0){v.costo=Number(p.costo||0);v.utilidad=(Number(p.precio||v.precio||0)-Number(p.costo||0))*cantidad;cambio=true;}return v;});if(cambio)guardarDatos();}
+migrarVentasHistoricas();
 function guardarDatos(){localStorage.setItem('kamapiro_productos',JSON.stringify(productos));localStorage.setItem('kamapiro_ventas',JSON.stringify(ventas));}
 function mostrarSeccion(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function mostrarInicio(){mostrarSeccion('inicio');actualizarInicio();}
