@@ -502,6 +502,79 @@ footer {
     </div>
 
 </section>
+<section id="ventas" class="screen">
+
+    <div class="top-buttons">
+        <h2>💰 Ventas</h2>
+
+        <button class="btn btn-secondary" onclick="mostrarInicio()">
+            ← Inicio
+        </button>
+    </div>
+
+    <div class="card">
+
+        <h3>📝 Registrar venta</h3>
+
+        <div class="form-group">
+            <label>Producto</label>
+
+            <select id="ventaProducto">
+                <option value="">Seleccione un producto</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Cantidad</label>
+
+            <input
+                type="number"
+                id="ventaCantidad"
+                min="1"
+                value="1"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Precio de venta (L.)</label>
+
+            <input
+                type="number"
+                id="ventaPrecio"
+                readonly
+                value="0"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Total de venta (L.)</label>
+
+            <input
+                type="number"
+                id="ventaTotal"
+                readonly
+                value="0"
+            >
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="registrarVenta()"
+        >
+            💰 Registrar venta
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h3>📋 Ventas registradas</h3>
+
+        <div id="listaVentas"></div>
+
+    </div>
+
+</section>    
 
 </div>
 
