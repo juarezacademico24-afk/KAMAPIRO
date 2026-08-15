@@ -1,0 +1,40 @@
+name: Integrar Compras al menú
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  integrar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Integrar botón Compras
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          marker = '<div class="menu" onclick="show(\'whatsapp\')">'
+          compras = '<div class="menu" onclick="location.href=\'compras.html\'"><div class="icon">🛒</div><b>Compras</b><div class="muted">Ingreso de inventario</div></div>'
+          if "location.href='compras.html'" not in s:
+              if marker not in s:
+                  raise SystemExit('No se encontró el punto de inserción del menú.')
+              s = s.replace(marker, compras + marker, 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Guardar cambios
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Integrar módulo de compras al menú"
+          git push
