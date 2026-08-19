@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KAMAPIRO · Cliente</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#111827}.top{background:#101827;color:white;padding:18px 22px;position:sticky;top:0;z-index:10}.topin{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:25px;font-weight:800}.brand small{display:block;font-size:12px;font-weight:400;opacity:.8}.cart{background:#16a34a;border:0;color:#fff;border-radius:10px;padding:10px 15px;font-weight:700;cursor:pointer}.wrap{max-width:1100px;margin:25px auto;padding:0 18px}.hero{background:white;border-radius:18px;padding:25px;margin-bottom:20px;box-shadow:0 2px 10px #0000000d}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;color:#6b7280}.search{width:100%;padding:14px;border:1px solid #d1d5db;border-radius:11px;margin-top:18px;font-size:16px}.cats{display:flex;gap:8px;overflow:auto;margin:18px 0}.cat{border:1px solid #d1d5db;background:white;padding:9px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}.cat.active{background:#111827;color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.card{background:white;border-radius:15px;padding:16px;box-shadow:0 2px 10px #0000000b}.pic{height:150px;border-radius:11px;background:#eef1f5;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px}.card h3{margin:0 0 5px;font-size:17px}.code{font-size:12px;color:#6b7280}.price{font-size:21px;font-weight:800;margin:12px 0}.stock{font-size:12px;color:#15803d;margin-bottom:10px}.add{width:100%;padding:11px;border:0;border-radius:9px;background:#16a34a;color:#fff;font-weight:700;cursor:pointer}.empty{text-align:center;padding:40px;color:#6b7280}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:20;padding:30px}.box{background:white;max-width:560px;margin:auto;border-radius:16px;padding:22px;max-height:90vh;overflow:auto}.row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding:12px 0}.qty button{border:1px solid #ccc;background:white;border-radius:6px;padding:4px 9px}.checkout{margin-top:18px;width:100%;padding:13px;border:0;border-radius:10px;background:#16a34a;color:#fff;font-weight:800}.close{float:right;border:0;background:#eee;border-radius:8px;padding:7px 10px;cursor:pointer}@media(max-width:600px){.hero h1{font-size:24px}.grid{grid-template-columns:1fr 1fr}.pic{height:115px}} 
+</style></head>
+<body>
+<header class="top"><div class="topin"><div class="brand">🛍️ KAMAPIRO<small>Compra fácil · repuestos y productos</small></div><button class="cart" onclick="openCart()">🛒 Carrito (<span id="count">0</span>)</button></div></header>
+<main class="wrap">
+<section class="hero"><h1>Encontrá lo que necesitás</h1><p>Buscá por nombre, código o categoría y agregá tus productos al carrito.</p><input id="search" class="search" placeholder="🔎 Buscar producto..." oninput="render()"></section>
+<div id="cats" class="cats"></div><section id="grid" class="grid"></section>
+</main>
+<div id="modal" class="modal"><div class="box"><button class="close" onclick="closeCart()">✕</button><h2>🛒 Tu carrito</h2><div id="cartItems"></div><h3 id="total"></h3><button class="checkout" onclick="sendOrder()">📲 Solicitar pedido por WhatsApp</button></div></div>
+<script>
+const products=[
+{id:1,name:'Bomba Auxiliar de Clutch',code:'BAC-001',cat:'Clutch',price:650,stock:9,icon:'⚙️'},
+{id:2,name:'Bomba Principal de Clutch',code:'BPC-002',cat:'Clutch',price:850,stock:6,icon:'🔧'},
+{id:3,name:'Pastillas de Freno Delanteras',code:'PFD-003',cat:'Frenos',price:980,stock:12,icon:'🛞'},
+{id:4,name:'Filtro de Aceite',code:'FA-004',cat:'Filtros',price:220,stock:18,icon:'🧰'},
+{id:5,name:'Filtro de Aire',code:'FAR-005',cat:'Filtros',price:390,stock:10,icon:'📦'},
+{id:6,name:'Amortiguador Delantero',code:'AMD-006',cat:'Suspensión',price:1850,stock:4,icon:'🚗'}];
+let cart=[];let active='Todos';
+function money(n){return 'L.'+n.toLocaleString('es-HN',{minimumFractionDigits:2})}
+function renderCats(){let cats=['Todos',...new Set(products.map(p=>p.cat))];document.getElementById('cats').innerHTML=cats.map(c=>`<button class="cat ${c===active?'active':''}" onclick="active='${c}';render()">${c}</button>`).join('')}
+function render(){renderCats();let q=document.getElementById('search').value.toLowerCase();let list=products.filter(p=>(active==='Todos'||p.cat===active)&&(`${p.name} ${p.code} ${p.cat}`).toLowerCase().includes(q));document.getElementById('grid').innerHTML=list.length?list.map(p=>`<article class="card"><div class="pic">${p.icon}</div><div class="code">${p.code}</div><h3>${p.name}</h3><div class="price">${money(p.price)}</div><div class="stock">✓ ${p.stock} disponibles</div><button class="add" onclick="add(${p.id})">Agregar al carrito</button></article>`).join(''):'<div class="empty">No encontramos productos con esa búsqueda.</div>'}
+function add(id){let p=products.find(x=>x.id===id);let x=cart.find(x=>x.id===id);if(x)x.qty++;else cart.push({...p,qty:1});updateCount()}
+function updateCount(){document.getElementById('count').textContent=cart.reduce((a,x)=>a+x.qty,0)}
+function openCart(){document.getElementById('modal').style.display='block';let el=document.getElementById('cartItems');if(!cart.length){el.innerHTML='<div class="empty">Tu carrito está vacío.</div>';document.getElementById('total').textContent='';return}el.innerHTML=cart.map(x=>`<div class="row"><div><b>${x.name}</b><br>${money(x.price)} × ${x.qty}</div><div class="qty"><button onclick="change(${x.id},-1)">−</button> ${x.qty} <button onclick="change(${x.id},1)">+</button></div></div>`).join('');document.getElementById('total').textContent='Total: '+money(cart.reduce((a,x)=>a+x.price*x.qty,0))}
+function closeCart(){document.getElementById('modal').style.display='none'}
+function change(id,n){let x=cart.find(x=>x.id===id);x.qty+=n;if(x.qty<=0)cart=cart.filter(x=>x.id!==id);updateCount();openCart()}
+function sendOrder(){if(!cart.length)return;let lines=cart.map(x=>`• ${x.name} x${x.qty} = ${money(x.price*x.qty)}`);let total=cart.reduce((a,x)=>a+x.price*x.qty,0);let msg=`Hola, quiero solicitar este pedido en KAMAPIRO:%0A%0A${encodeURIComponent(lines.join('\n'))}%0A%0ATotal estimado: ${encodeURIComponent(money(total))}`;window.open('https://wa.me/?text='+msg,'_blank')}
+render();
+</script></body></html>
