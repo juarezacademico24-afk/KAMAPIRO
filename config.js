@@ -3,6 +3,6 @@
 // La anon/public key está diseñada para usarse en el navegador; la seguridad real
 // la proporcionan las políticas RLS configuradas en supabase-setup.sql.
 window.KAMAPIRO_CONFIG = {
-  SUPABASE_URL: 'PEGAR_AQUI_URL_DE_SUPABASE',
+  SUPABASE_URL: 'https://vzvbwdflrzgjhaxakqbm.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_EH81mFye_7LlEaFFTxzQpA_-7b_RhdT
 };
