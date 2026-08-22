@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KAMAPIRO · Administración</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f6f8;color:#111827}.top{background:#101827;color:#fff;padding:16px 18px}.topin{max-width:1050px;margin:auto}.brand{font-size:24px;font-weight:800}.brand small{display:block;font-size:12px;font-weight:400;opacity:.8}.wrap{max-width:1050px;margin:22px auto;padding:0 16px}.panel{background:#fff;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px #0000000d}.hrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.hrow h1,.hrow h2{margin:0}.btn{border:0;border-radius:9px;padding:11px 14px;font-weight:700;cursor:pointer}.primary{background:#16a34a;color:#fff}.light{background:#eef1f5;color:#111827}.danger{background:#dc2626;color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:15px}.card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e5e7eb}.pic{height:180px;background:#eef1f5;display:flex;align-items:center;justify-content:center;font-size:55px;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover}.body{padding:14px}.code{font-size:12px;color:#6b7280}.card h3{margin:5px 0;font-size:17px}.meta{font-size:13px;color:#4b5563}.price{font-size:20px;font-weight:800;margin:8px 0}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:9px;font-size:15px}.full{grid-column:1/-1}.preview{width:100%;height:180px;border-radius:10px;background:#eef1f5;object-fit:cover;display:none}.notice{padding:11px 13px;border-radius:9px;background:#ecfdf5;color:#166534;margin-bottom:14px;display:none}.error{background:#fef2f2;color:#991b1b}.login{max-width:430px;margin:70px auto}.muted{color:#6b7280}.hidden{display:none!important}@media(max-width:650px){.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.grid{grid-template-columns:1fr 1fr}.pic{height:145px}.brand{font-size:20px}}
 </style>
@@ -14,20 +16,21 @@
 <header class="top"><div class="topin"><div class="brand">🛍️ KAMAPIRO<small>Administración de productos</small></div></div></header>
 <main class="wrap">
 <section id="loginPanel" class="panel login">
-<h2>🔐 Acceso de administración</h2><p class="muted">Escribí la clave de administración.</p>
-<div class="field"><label>Clave</label><input id="password" type="password" autocomplete="current-password" placeholder="Clave"></div><br>
-<button id="loginBtn" class="btn primary" style="width:100%" type="button">Entrar</button>
+<h2>🔐 Acceso de administración</h2>
+<p class="muted">Ingresá con la cuenta autorizada de Google.</p>
+<button id="loginBtn" class="btn primary" style="width:100%" type="button">Continuar con Google</button>
 </section>
 <section id="app" class="hidden">
+<div class="panel"><div class="hrow"><div><b id="userName"></b><div id="userEmail" class="muted"></div></div><button id="logoutBtn" class="btn light" type="button">Salir</button></div></div>
 <div id="notice" class="notice"></div>
-<section class="panel"><div class="hrow"><div><h1>📦 Productos</h1><div class="muted">Agregá productos desde el celular, con foto, precio y existencia.</div></div><button id="newBtn" class="btn primary" type="button">＋ Nuevo producto</button></div></section>
+<section class="panel"><div class="hrow"><div><h1>📦 Productos</h1><div class="muted">Agregá productos con foto, precio y existencia.</div></div><button id="newBtn" class="btn primary" type="button">＋ Nuevo producto</button></div></section>
 <section id="formPanel" class="panel hidden">
 <div class="hrow"><h2 id="formTitle">Nuevo producto</h2><button id="cancelBtn" class="btn light" type="button">Cancelar</button></div><br>
 <div class="formgrid">
-<div class="field"><label>Nombre del producto</label><input id="name" placeholder="Ej. Cartera casual para dama"></div>
-<div class="field"><label>Código</label><input id="code" placeholder="Ej. CAR-001"></div>
+<div class="field"><label>Nombre del producto</label><input id="name" placeholder="Ej. Aretes para dama"></div>
+<div class="field"><label>Código</label><input id="code" placeholder="Ej. ARI-001"></div>
 <div class="field"><label>Categoría</label><select id="category"><option>Carteras y bolsos</option><option>Cosméticos</option><option>Hombre</option><option>Mujer</option><option>Calzado</option><option>Accesorios</option><option>Hogar y regalos</option></select></div>
-<div class="field"><label>Precio (Lempiras)</label><input id="price" type="number" min="0" step="0.01" placeholder="750"></div>
+<div class="field"><label>Precio (Lempiras)</label><input id="price" type="number" min="0" step="0.01" placeholder="550"></div>
 <div class="field"><label>Existencia</label><input id="stock" type="number" min="0" step="1" placeholder="5"></div>
 <div class="field"><label>Foto del producto</label><input id="image" type="file" accept="image/*" capture="environment"></div>
 <div class="field full"><img id="preview" class="preview" alt="Vista previa"></div>
@@ -39,26 +42,27 @@
 </section>
 </main>
 <script>
-const cfg=window.KAMAPIRO_CONFIG||{};
-const ADMIN_KEY='1234';
-let sb=null,currentId=null,products=[];
+firebase.initializeApp(window.KAMAPIRO_FIREBASE_CONFIG);
+const auth=firebase.auth(),db=firebase.firestore();
+let currentId=null,products=[],unsubscribe=null;
 const $=id=>document.getElementById(id);
-function showNotice(text,error=false){$('notice').textContent=text;$('notice').className='notice'+(error?' error':'');$('notice').style.display='block';setTimeout(()=>$('notice').style.display='none',3500)}
+function showNotice(text,error=false){$('notice').textContent=text;$('notice').className='notice'+(error?' error':'');$('notice').style.display='block';setTimeout(()=>$('notice').style.display='none',4000)}
 function showLogin(){$('loginPanel').classList.remove('hidden');$('app').classList.add('hidden')}
-function showApp(){$('loginPanel').classList.add('hidden');$('app').classList.remove('hidden');loadProducts()}
-function login(){if($('password').value===ADMIN_KEY){sessionStorage.setItem('kamapiro_admin','1');showApp()}else showNotice('Clave incorrecta.',true)}
-async function init(){if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY){showNotice('Falta configurar Supabase en config.js.',true);return}sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);if(sessionStorage.getItem('kamapiro_admin')==='1')showApp();else showLogin()}
-async function loadProducts(){const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});if(error)return showNotice(error.message,true);products=data||[];render()}
-function money(n){return 'L.'+Number(n).toLocaleString('es-HN',{minimumFractionDigits:2})}
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]))}
-function render(){const q=$('filter').value.trim().toLowerCase();const list=products.filter(p=>`${p.name} ${p.code} ${p.category}`.toLowerCase().includes(q));$('products').innerHTML='';if(!list.length){$('products').innerHTML='<div class="panel muted">No hay productos.</div>';return}list.forEach(p=>{const card=document.createElement('article');card.className='card';card.innerHTML=`<div class="pic">${p.image_url?`<img src="${p.image_url}" alt="${escapeHtml(p.name)}">`:'📦'}</div><div class="body"><div class="code">${escapeHtml(p.code)}</div><h3>${escapeHtml(p.name)}</h3><div class="meta">${escapeHtml(p.category)} · ${p.active?'Visible':'Oculto'}</div><div class="price">${money(p.price)}</div><div class="meta">Existencia: ${p.stock}</div><div class="actions"><button class="btn light edit" type="button">Editar</button><button class="btn danger del" type="button">Eliminar</button></div></div>`;card.querySelector('.edit').onclick=()=>edit(p.id);card.querySelector('.del').onclick=()=>remove(p);$('products').appendChild(card)})}
+function showApp(user){$('loginPanel').classList.add('hidden');$('app').classList.remove('hidden');$('userName').textContent=user.displayName||'Administrador';$('userEmail').textContent=user.email||'';listenProducts()}
+function listenProducts(){if(unsubscribe)unsubscribe();unsubscribe=db.collection('productos').onSnapshot(s=>{products=s.docs.map(d=>({id:d.id,...d.data()}));products.sort((a,b)=>{const aa=a.actualizado?.toMillis?a.actualizado.toMillis():0;const bb=b.actualizado?.toMillis?b.actualizado.toMillis():0;return bb-aa});render()},e=>showNotice('No se pueden leer los productos: '+e.message,true))}
+function money(n){return 'L.'+Number(n||0).toLocaleString('es-HN',{minimumFractionDigits:2})}
+function escapeHtml(s){return String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]))}
+function render(){const q=$('filter').value.trim().toLowerCase();const list=products.filter(p=>`${p.nombre||''} ${p.codigo||''} ${p.categoria||''}`.toLowerCase().includes(q));$('products').innerHTML='';if(!list.length){$('products').innerHTML='<div class="panel muted">No hay productos registrados.</div>';return}list.forEach(p=>{const card=document.createElement('article');card.className='card';card.innerHTML=`<div class="pic">${p.imagen?`<img src="${p.imagen}" alt="${escapeHtml(p.nombre)}">`:'📦'}</div><div class="body"><div class="code">${escapeHtml(p.codigo||'Sin código')}</div><h3>${escapeHtml(p.nombre||'Sin nombre')}</h3><div class="meta">${escapeHtml(p.categoria||'Sin categoría')} · ${p.activo?'Visible':'Oculto'}</div><div class="price">${money(p.precio)}</div><div class="meta">Existencia: ${p.existencia||0}</div><div class="actions"><button class="btn light edit" type="button">Editar</button><button class="btn danger del" type="button">Eliminar</button></div></div>`;card.querySelector('.edit').onclick=()=>edit(p.id);card.querySelector('.del').onclick=()=>remove(p);$('products').appendChild(card)})}
 function resetForm(){$('formPanel').classList.add('hidden');currentId=null;['name','code','price','stock'].forEach(id=>$(id).value='');$('category').value='Carteras y bolsos';$('active').checked=true;$('image').value='';$('preview').style.display='none';$('preview').src='';$('formTitle').textContent='Nuevo producto'}
-function edit(id){const p=products.find(x=>x.id===id);if(!p)return;currentId=id;$('formTitle').textContent='Editar producto';$('name').value=p.name;$('code').value=p.code;$('category').value=p.category;$('price').value=p.price;$('stock').value=p.stock;$('active').checked=p.active;$('image').value='';if(p.image_url){$('preview').src=p.image_url;$('preview').style.display='block'}$('formPanel').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
-async function uploadImage(file){const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');const path=`${crypto.randomUUID()}.${ext||'jpg'}`;const {error}=await sb.storage.from('products').upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;return sb.storage.from('products').getPublicUrl(path).data.publicUrl}
-async function save(){const name=$('name').value.trim(),code=$('code').value.trim(),category=$('category').value,price=Number($('price').value),stock=Number($('stock').value),active=$('active').checked;if(!name||!code||!Number.isFinite(price)||!Number.isFinite(stock))return showNotice('Completá nombre, código, precio y existencia.',true);$('saveBtn').disabled=true;$('saveBtn').textContent='Guardando...';try{let image_url=currentId?(products.find(p=>p.id===currentId)?.image_url||null):null;const file=$('image').files[0];if(file)image_url=await uploadImage(file);const payload={name,code,category,price,stock,active,image_url,updated_at:new Date().toISOString()};const result=currentId?await sb.from('products').update(payload).eq('id',currentId):await sb.from('products').insert(payload);if(result.error)throw result.error;showNotice('✓ Producto guardado');resetForm();await loadProducts()}catch(e){showNotice(e.message||'No se pudo guardar.',true)}finally{$('saveBtn').disabled=false;$('saveBtn').textContent='Guardar producto'}}
-async function remove(p){if(!confirm(`¿Eliminar "${p.name}"?`))return;const {error}=await sb.from('products').delete().eq('id',p.id);if(error)return showNotice(error.message,true);showNotice('Producto eliminado');loadProducts()}
-$('loginBtn').onclick=login;$('password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('newBtn').onclick=()=>{$('formPanel').classList.remove('hidden');currentId=null;$('formTitle').textContent='Nuevo producto';['name','code','price','stock'].forEach(id=>$(id).value='');$('category').value='Carteras y bolsos';$('active').checked=true;$('image').value='';$('preview').style.display='none'};$('cancelBtn').onclick=resetForm;$('saveBtn').onclick=save;$('filter').addEventListener('input',render);$('image').addEventListener('change',e=>{const f=e.target.files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').style.display='block'}});
-init();
+function edit(id){const p=products.find(x=>x.id===id);if(!p)return;currentId=id;$('formTitle').textContent='Editar producto';$('name').value=p.nombre||'';$('code').value=p.codigo||'';$('category').value=p.categoria||'Accesorios';$('price').value=p.precio??'';$('stock').value=p.existencia??'';$('active').checked=p.activo!==false;$('image').value='';if(p.imagen){$('preview').src=p.imagen;$('preview').style.display='block'}else{$('preview').style.display='none'}$('formPanel').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+function resizeImage(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const max=700;let w=im.width,h=im.height;if(w>max||h>max){if(w>h){h=Math.round(h*max/w);w=max}else{w=Math.round(w*max/h);h=max}}const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(im,0,0,w,h);let q=.65,src=c.toDataURL('image/jpeg',q);if(src.length>700000)src=c.toDataURL('image/jpeg',.45);if(src.length>900000)return reject(new Error('La foto es demasiado grande. Elegí otra más pequeña.'));resolve(src)};im.onerror=()=>reject(new Error('No se pudo leer la imagen.'));im.src=r.result};r.onerror=()=>reject(new Error('No se pudo leer el archivo.'));r.readAsDataURL(file)})}
+async function save(){if(!auth.currentUser)return showNotice('Primero iniciá sesión con Google.',true);const name=$('name').value.trim(),code=$('code').value.trim(),category=$('category').value,price=Number($('price').value),stock=Number($('stock').value),active=$('active').checked;if(!name||!code||!Number.isFinite(price)||!Number.isFinite(stock))return showNotice('Completá nombre, código, precio y existencia.',true);$('saveBtn').disabled=true;$('saveBtn').textContent='Guardando...';try{let image=currentId?(products.find(p=>p.id===currentId)?.imagen||''):'';const file=$('image').files[0];if(file)image=await resizeImage(file);const payload={codigo:code,nombre:name,categoria,precio:price,existencia:stock,activo:active,imagen:image,actualizado:firebase.firestore.FieldValue.serverTimestamp()};const ref=currentId?db.collection('productos').doc(currentId):db.collection('productos').doc();if(!currentId)payload.creado=payload.actualizado;await ref.set(payload,{merge:true});showNotice('✓ Producto guardado correctamente');resetForm()}catch(e){console.error(e);showNotice('No se pudo guardar: '+(e.message||e),true)}finally{$('saveBtn').disabled=false;$('saveBtn').textContent='Guardar producto'}}
+async function remove(p){if(!confirm(`¿Eliminar "${p.nombre}"?`))return;try{await db.collection('productos').doc(p.id).delete();showNotice('Producto eliminado')}catch(e){showNotice('No se pudo eliminar: '+e.message,true)}}
+$('loginBtn').onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>showNotice('No se pudo iniciar sesión: '+e.message,true));
+$('logoutBtn').onclick=()=>auth.signOut();
+$('newBtn').onclick=()=>{$('formPanel').classList.remove('hidden');currentId=null;$('formTitle').textContent='Nuevo producto';['name','code','price','stock'].forEach(id=>$(id).value='');$('category').value='Carteras y bolsos';$('active').checked=true;$('image').value='';$('preview').style.display='none';window.scrollTo({top:0,behavior:'smooth'})};
+$('cancelBtn').onclick=resetForm;$('saveBtn').onclick=save;$('filter').addEventListener('input',render);$('image').addEventListener('change',e=>{const f=e.target.files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').style.display='block'}});
+auth.onAuthStateChanged(user=>user?showApp(user):showLogin());
 </script>
 </body>
 </html>
