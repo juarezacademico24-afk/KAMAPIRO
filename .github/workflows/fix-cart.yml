@@ -1,0 +1,50 @@
+name: Fix KAMAPIRO cart
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-cart:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fix WhatsApp cart clearing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          new_fn = r'''function sendWhatsApp(){if(!data.settings.wa){toast('Primero configurá el WhatsApp en Administración.');return}if(!data.cart.length)return;const lines=data.cart.map(c=>{const p=data.products.find(x=>x.id===c.id);return p?`• ${p.name} × ${c.qty} — ${money(p.price*c.qty)}`:''}).filter(Boolean),total=data.cart.reduce((a,c)=>{const p=data.products.find(x=>x.id===c.id);return a+(p?p.price*c.qty:0)},0),msg=`Hola, estoy interesado/a en estos productos de KAMAPIRO:\n\n${lines.join('\n')}\n\nTotal solicitado: ${money(total)}\n\nQuisiera confirmar disponibilidad y detalles de la compra.`;const url=`https://wa.me/${data.settings.wa}?text=${encodeURIComponent(msg)}`;window.open(url,'_blank');data.cart=[];save();renderCart();updateCart();toast('✅ Selección enviada. El carrito fue vaciado.')}'''
+
+          pattern = r'function sendWhatsApp\(\)\{.*?\}\nfunction renderDash\(\)\{'
+          replacement = new_fn + '\nfunction renderDash(){'
+          updated, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
+
+          if count != 1:
+              raise SystemExit('No se encontró la función sendWhatsApp en index.html')
+
+          if updated == text:
+              print('No hay cambios pendientes')
+              raise SystemExit(0)
+
+          path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix cart clearing after WhatsApp"
+          git push
