@@ -1,5 +1,5 @@
 // KAMAPIRO · Firebase configuration
-const KAMAPIRO_API_KEY = ["AIzaSyBkvX5d3UKIYMF", "BzYXE1pakplLgh", "Opdrbw"].join("");
+const KAMAPIRO_API_KEY = "AIzaSyB7vBJ9Rf1ar2Bb760vGX65gj-kNy1_xQU";
 window.KAMAPIRO_FIREBASE_CONFIG = {
   apiKey: KAMAPIRO_API_KEY,
   authDomain: "kamapiro.firebaseapp.com",
