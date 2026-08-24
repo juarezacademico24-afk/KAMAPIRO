@@ -1,6 +1,6 @@
 // KAMAPIRO · Firebase configuration
 window.KAMAPIRO_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBkvX5d3UKlYMFBzYXE1pakplLghOpdrbw",
+  apiKey: "AIzaSyB7vBJ9Rf1ar2Bb76OvGX65gj-kNy1_xQU",
   authDomain: "kamapiro.firebaseapp.com",
   projectId: "kamapiro",
   storageBucket: "kamapiro.firebasestorage.app",
