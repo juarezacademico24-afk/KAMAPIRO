@@ -1,0 +1,35 @@
+name: KAMAPIRO - limpiar carrito
+
+on:
+  push:
+    branches: [cliente-v1]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-cart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ajustar carrito después de WhatsApp
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = "window.open('https://api.whatsapp.com/send?phone='+db.wa+'&text='+encodeURIComponent(msg),'_blank')}"
+          new = "window.open('https://api.whatsapp.com/send?phone='+db.wa+'&text='+encodeURIComponent(msg),'_blank');db.cart=[];persist();updateCart()}"
+          if old in s:
+              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          else:
+              print('El ajuste ya estaba aplicado o no se encontró el código.')
+          PY
+      - name: Publicar cambio
+        run: |
+          git config user.name "KAMAPIRO Bot"
+          git config user.email "actions@github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Vaciar carrito después de enviar WhatsApp"
+          git push
