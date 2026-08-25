@@ -1,0 +1,36 @@
+name: Add mobile settings button
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-mobile-settings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add Configuración to mobile admin navigation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<button onclick="adminGo(\'inventory\')">📊<br>Inventario</button></div>'
+          new = '<button onclick="adminGo(\'inventory\')">📊<br>Inventario</button><button onclick="adminGo(\'settings\')">⚙️<br>Configuración</button></div>'
+          if old in s and "adminGo('settings')">⚙️<br>Configuración</button>" not in s[s.find('<div class="mobile-admin-nav">'):s.find('</div>', s.find('<div class="mobile-admin-nav">'))+6]:
+              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit and finish
+        run: |
+          git config user.name "KAMAPIRO Bot"
+          git config user.email "actions@github.com"
+          git add index.html
+          git rm .github/workflows/add-mobile-settings.yml
+          git commit -m "Agregar Configuracion al menu movil"
+          git push
