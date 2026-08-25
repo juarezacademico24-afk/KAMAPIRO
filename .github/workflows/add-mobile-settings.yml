@@ -14,16 +14,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Add Configuración to mobile admin navigation
+      - name: Add Configuracion to mobile admin navigation
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          old = '<button onclick="adminGo(\'inventory\')">📊<br>Inventario</button></div>'
-          new = '<button onclick="adminGo(\'inventory\')">📊<br>Inventario</button><button onclick="adminGo(\'settings\')">⚙️<br>Configuración</button></div>'
-          if old in s and "adminGo('settings')">⚙️<br>Configuración</button>" not in s[s.find('<div class="mobile-admin-nav">'):s.find('</div>', s.find('<div class="mobile-admin-nav">'))+6]:
-              p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          old = "<button onclick=\"adminGo('inventory')\">📊<br>Inventario</button></div>"
+          new = "<button onclick=\"adminGo('inventory')\">📊<br>Inventario</button><button onclick=\"adminGo('settings')\">⚙️<br>Configuración</button></div>"
+          if old not in s:
+              raise SystemExit('No se encontró el menú móvil esperado')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
           PY
 
       - name: Commit and finish
